@@ -1718,6 +1718,7 @@ function App() {
                       <h4 className="font-bold mb-2">通信协议</h4>
                       <ul className="text-sm space-y-1">
                         <li>Web Bluetooth API</li>
+                        <li>WebAssembly</li>
                         <li>SPP / BLE 连接</li>
                         <li>小米手环通信协议</li>
                       </ul>
