@@ -103,13 +103,13 @@ if (device) {
 }
 ```
 
-#### `thirdpartyapp_install(device_addr, package_name, apk_data)`
+#### `thirdpartyapp_install(device_addr, package_name, rpk_data)`
 安装第三方应用到设备。
 
 ```javascript
-// 需要先读取 APK 文件数据
-// const apkData = ...; // 二进制数据
-// sandbox.wasm.thirdpartyapp_install(device.addr, "com.example.app", apkData);
+// 需要先读取 RPK 文件数据
+// const rpkData = ...; // 二进制数据
+// sandbox.wasm.thirdpartyapp_install(device.addr, "com.example.app", rpkData);
 ```
 
 ### 事件监听
@@ -979,7 +979,6 @@ const debugGUI = {
 
 ## 限制和注意事项
 
-1. **沙箱环境**：脚本在受限环境中运行，无法访问 DOM、网络请求等
 2. **性能考虑**：避免无限循环或大量计算，可能影响页面性能
 3. **存储限制**：localStorage 有大小限制（通常 5-10MB）
 4. **事件监听**：`register_event_sink` 只能注册一个监听器，新注册会覆盖旧的
@@ -1028,15 +1027,5 @@ try {
 }
 ```
 
-## 更新日志
-
-### v1.0 (当前版本)
-- 初始脚本系统
-- WASM 接口集成
-- GUI 创建系统
-- 本地存储支持
-- 事件监听机制
-
----
 
 **提示**：脚本保存在浏览器的 localStorage 中，清除浏览器数据会删除所有保存的脚本。建议定期导出重要脚本。
