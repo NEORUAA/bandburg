@@ -45,31 +45,163 @@ class WasmClient {
         }
         this.eventCallbacks.get(event).push(callback);
         
-        // 如果是第一次注册事件，设置事件接收器
-        if (event === 'device-connected' || event === 'device-disconnected') {
-            this.setupEventSink();
-        }
+        // 设置事件接收器（如果尚未设置）
+        this.setupEventSink();
     }
 
     // 触发事件
     emit(event, data) {
+        // 触发特定事件
         const callbacks = this.eventCallbacks.get(event);
         if (callbacks) {
             callbacks.forEach(callback => callback(data));
+        }
+        
+        // 触发通配符事件
+        const wildcardCallbacks = this.eventCallbacks.get('*');
+        if (wildcardCallbacks) {
+            wildcardCallbacks.forEach(callback => callback({ event, ...data }));
         }
     }
 
     // 设置事件接收器
     setupEventSink() {
-        if (!this.wasmModule || !this.wasmModule.register_event_sink) {
-            console.warn('WASM模块不支持事件接收器');
+        // 防止重复设置
+        if (this._eventSinkSetup) {
             return;
         }
         
-        this.wasmModule.register_event_sink((event, payload) => {
-            console.log('收到WASM事件:', event, payload);
-            this.emit(event, payload);
-        });
+        // 设置 WASM 事件接收器（如果支持）
+        if (this.wasmModule && this.wasmModule.register_event_sink) {
+            try {
+                this.wasmModule.register_event_sink((event, payload) => {
+                    console.log('收到WASM事件:', event, payload);
+                    this.emit(event, payload);
+                });
+                
+                console.log('WASM事件接收器已设置 (register_event_sink)');
+            } catch (error) {
+                console.error('设置WASM事件接收器失败:', error);
+            }
+        }
+        
+        // 设置控制台日志捕获来捕获 WASM 日志输出
+        this.setupConsoleCapture();
+        
+        this._eventSinkSetup = true;
+    }
+    
+    // 设置控制台捕获
+    setupConsoleCapture() {
+        // 防止重复设置控制台捕获
+        if (this._consoleCaptureSetup) {
+            return;
+        }
+        
+        const originalConsoleLog = console.log;
+        const originalConsoleInfo = console.info;
+        const self = this;
+        
+        // 捕获 console.log
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            self.processWasmLog(args);
+        };
+        
+        // 捕获 console.info
+        console.info = function(...args) {
+            originalConsoleInfo.apply(console, args);
+            self.processWasmLog(args);
+        };
+        
+        this._consoleCaptureSetup = true;
+        console.log('WASM控制台日志捕获已启用');
+    }
+    
+    // 处理 WASM 日志
+    processWasmLog(args) {
+        const logMessage = args.join(' ');
+        
+        // 捕获第三方应用消息
+        if (logMessage.includes('[WASM] Received third-party app message from')) {
+            try {
+                const parts = logMessage.split('[WASM] Received third-party app message from ');
+                if (parts.length > 1) {
+                    const packagePart = parts[1].split(': ');
+                    const packageName = packagePart[0];
+                    const messageContent = packagePart[1];
+                    
+                    // 尝试解析 JSON 消息
+                    let parsedData;
+                    try {
+                        parsedData = JSON.parse(messageContent);
+                    } catch (e) {
+                        parsedData = messageContent;
+                    }
+                    
+                    // 创建事件数据
+                    const eventData = {
+                        type: 'thirdpartyapp_message',
+                        package_name: packageName,
+                        data: parsedData,
+                        rawMessage: logMessage,
+                        timestamp: Date.now()
+                    };
+                    
+                    this.emit('thirdpartyapp_message', eventData);
+                    this.emit('*', eventData);
+                    console.log('已捕获第三方应用消息事件:', eventData);
+                }
+            } catch (error) {
+                console.warn('解析 WASM 应用消息日志失败:', error);
+            }
+        }
+        
+        // 捕获数据包事件
+        if (logMessage.includes('[WASM] on_pb_packet:')) {
+            try {
+                const parts = logMessage.split('[WASM] on_pb_packet: ');
+                if (parts.length > 1) {
+                    const packetData = JSON.parse(parts[1]);
+                    const eventData = {
+                        type: 'pb_packet',
+                        packet: packetData,
+                        rawMessage: logMessage,
+                        timestamp: Date.now()
+                    };
+                    
+                    this.emit('pb_packet', eventData);
+                    this.emit('*', eventData);
+                    console.log('已捕获数据包事件:', eventData);
+                }
+            } catch (error) {
+                console.warn('解析 WASM 数据包日志失败:', error);
+            }
+        }
+        
+        // 捕获设备连接事件
+        if (logMessage.includes('[WASM] Device connected:') || logMessage.includes('[WASM] 设备已连接:')) {
+            const eventData = {
+                type: 'device_connected',
+                message: logMessage,
+                timestamp: Date.now()
+            };
+            
+            this.emit('device_connected', eventData);
+            this.emit('*', eventData);
+        }
+        
+        // 捕获设备断开事件
+        if (logMessage.includes('[WASM] Device disconnected:') || logMessage.includes('[WASM] 设备已断开:')) {
+            const eventData = {
+                type: 'device_disconnected',
+                message: logMessage,
+                timestamp: Date.now()
+            };
+            
+            this.emit('device_disconnected', eventData);
+            this.emit('*', eventData);
+        }
     }
 
     // 调用WASM函数

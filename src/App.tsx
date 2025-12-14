@@ -2043,10 +2043,23 @@ function App() {
                                   
                                   // 事件监听
                                   register_event_sink: (callback: Function) => {
-                                    if (!window.wasmClient?.wasmModule?.register_event_sink) {
-                                      throw new Error('WASM模块未初始化或register_event_sink函数不可用')
+                                    if (!window.wasmClient) {
+                                      throw new Error('WASM客户端未初始化')
                                     }
-                                    return window.wasmClient.wasmModule.register_event_sink(callback)
+                                    
+                                    // 通过 wasmClient 的事件系统注册回调
+                                    // 使用通配符 '*' 捕获所有事件
+                                    window.wasmClient.on('*', (eventData) => {
+                                      // 将事件数据传递给用户回调
+                                      callback(eventData)
+                                    })
+                                    
+                                    // 确保事件接收器和控制台捕获已设置
+                                    if (window.wasmClient.setupEventSink) {
+                                      window.wasmClient.setupEventSink()
+                                    }
+                                    
+                                    return true
                                   },
                                   
                                   // 文件操作
@@ -2591,14 +2604,131 @@ sendMessageToApp()`}
                     <div className="border border-black p-4">
                       <h4 className="font-bold mb-2">事件和工具</h4>
                       <ul className="text-sm space-y-1">
-                        <li><code>sandbox.wasm.register_event_sink()</code> - 注册事件监听</li>
-                        <li><code>sandbox.log()</code> - 输出日志</li>
-                        <li><code>sandbox.currentDevice</code> - 当前连接设备</li>
-                        <li><code>sandbox.devices</code> - 所有保存的设备</li>
-                        <li><code>sandbox.gui()</code> - 创建GUI界面（JSON配置）</li>
-                        <li><code>sandbox.utils.hexToBytes()</code> - 十六进制字符串转字节数组</li>
-                        <li><code>sandbox.utils.bytesToHex()</code> - 字节数组转十六进制字符串</li>
+                        <li><code>sandbox.wasm.register_event_sink(callback)</code> - 注册事件监听器，接收所有 WASM 事件</li>
+                        <li><code>sandbox.log(message)</code> - 输出日志到界面和控制台</li>
+                        <li><code>sandbox.currentDevice</code> - 当前连接设备对象（包含 addr, name, authkey 等）</li>
+                        <li><code>sandbox.devices</code> - 所有保存的设备数组</li>
+                        <li><code>sandbox.gui(config)</code> - 创建GUI界面（JSON配置）</li>
+                        <li><code>sandbox.utils.hexToBytes(hex)</code> - 十六进制字符串转字节数组</li>
+                        <li><code>sandbox.utils.bytesToHex(bytes)</code> - 字节数组转十六进制字符串</li>
                       </ul>
+                      
+                      <div className="mt-4 pt-4 border-t border-gray-300">
+                        <h5 className="font-bold mb-2">事件系统详细说明</h5>
+                        <p className="text-xs mb-2"><code>sandbox.wasm.register_event_sink(callback)</code> 用于监听来自 WASM 模块的事件，包括：</p>
+                        
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-xs border-collapse border border-gray-400">
+                            <thead>
+                              <tr className="bg-gray-100">
+                                <th className="border border-gray-400 p-1">事件类型</th>
+                                <th className="border border-gray-400 p-1">触发时机</th>
+                                <th className="border border-gray-400 p-1">事件数据格式</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="border border-gray-400 p-1 font-mono">thirdpartyapp_message</td>
+                                <td className="border border-gray-400 p-1">收到第三方应用消息时</td>
+                                <td className="border border-gray-400 p-1"><pre className="text-xs whitespace-pre-wrap">{
+`{
+  type: 'thirdpartyapp_message',
+  package_name: 'com.xiaomi.xms.wearable.demo',
+  data: { name: 'Amy', age: 18, t: 1765684423188 },
+  rawMessage: '...',
+  timestamp: 1640995200000
+}`}</pre></td>
+                              </tr>
+                              <tr>
+                                <td className="border border-gray-400 p-1 font-mono">pb_packet</td>
+                                <td className="border border-gray-400 p-1">收到协议缓冲区数据包时</td>
+                                <td className="border border-gray-400 p-1"><pre className="text-xs whitespace-pre-wrap">{
+`{
+  type: 'pb_packet',
+  packet: {
+    type: 'THIRDPARTY_APP',
+    id: 9,
+    thirdpartyApp: {
+      messageContent: {
+        basicInfo: {
+          packageName: 'com.xiaomi.xms.wearable.demo',
+          fingerprint: 'C4KTi5x93rJ1gyPKMPEaj2eAlcU='
+        },
+        content: 'eyJuYW1lIjoiQW15IiwiYWdlIjoxOCwidCI6MTc1NjU4NDQyMzE4OH0='
+      }
+    }
+  },
+  rawMessage: '[WASM] on_pb_packet: {...}',
+  timestamp: 1640995200000
+}`}</pre></td>
+                              </tr>
+                              <tr>
+                                <td className="border border-gray-400 p-1 font-mono">device_connected</td>
+                                <td className="border border-gray-400 p-1">设备连接成功时</td>
+                                <td className="border border-gray-400 p-1"><pre className="text-xs whitespace-pre-wrap">{
+`{
+  type: 'device_connected',
+  message: '[WASM] Device connected: ...',
+  timestamp: 1640995200000
+}`}</pre></td>
+                              </tr>
+                              <tr>
+                                <td className="border border-gray-400 p-1 font-mono">device_disconnected</td>
+                                <td className="border border-gray-400 p-1">设备断开连接时</td>
+                                <td className="border border-gray-400 p-1"><pre className="text-xs whitespace-pre-wrap">{
+`{
+  type: 'device_disconnected',
+  message: '[WASM] Device disconnected: ...',
+  timestamp: 1640995200000
+}`}</pre></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        
+                        <p className="text-xs mt-3"><strong>使用示例：</strong></p>
+                        <pre className="text-xs bg-gray-50 p-2 overflow-x-auto">{
+`// 监听所有 WASM 事件
+sandbox.wasm.register_event_sink((event) => {
+  sandbox.log(\`收到事件: \${event.type}\`);
+  
+  // 处理第三方应用消息（已解析的消息）
+  if (event.type === 'thirdpartyapp_message') {
+    sandbox.log(\`来自 \${event.package_name} 的消息: \${JSON.stringify(event.data)}\`);
+    // 处理应用消息，event.data 包含解析后的 JSON 数据
+  }
+  
+  // 处理原始协议缓冲区数据包
+  if (event.type === 'pb_packet') {
+    sandbox.log(\`收到原始数据包，类型: \${event.packet?.type}\`);
+    
+    // 检查是否是第三方应用数据包
+    if (event.packet?.type === 'THIRDPARTY_APP') {
+      sandbox.log(\`第三方应用包ID: \${event.packet.id}\`);
+      // pb_packet 包含原始编码数据，thirdpartyapp_message 事件会提供解析后的消息
+    }
+  }
+  
+  // 设备连接状态变化
+  if (event.type === 'device_connected') {
+    sandbox.log('设备已连接');
+  }
+  
+  if (event.type === 'device_disconnected') {
+    sandbox.log('设备已断开');
+  }
+});
+
+sandbox.log('事件监听器已注册');
+
+// 事件系统通过捕获 WASM 控制台日志工作
+// 确保浏览器控制台已打开以便调试`}
+                        </pre>
+                        
+                        <p className="text-xs mt-2 text-gray-600">
+                          <strong>注意：</strong> 事件系统通过捕获 WASM 控制台日志工作。确保浏览器控制台已打开以便调试。
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
