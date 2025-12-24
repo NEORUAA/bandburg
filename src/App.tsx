@@ -3771,7 +3771,7 @@ sandbox.log('✅ GUI界面已创建，请与界面交互')`
         </div>
       )}
       <div className="flex page-container footer font-bold">
-        Powered by <img src="/astrobox.svg" style={{height: "14px"}}/> NG
+        <img src="/astrobox.svg" style={{height: "14px"}}/>
       </div>
     </div>
   )
