@@ -1461,7 +1461,7 @@ function App() {
       
       {/* 顶部区域：左上角品牌标识 + 移动端汉堡菜单按钮 */}
       <div className="border-b border-gray-200 py-4 px-6 fixed z-10" style={{ background:"white", border:"none", width:"100%"}}>
-        <div className="flex items-center justify-between" style={{ maxWidth:"1200px", height:"28px", margin:"0 auto", padding:"0 20px"}}>
+        <div className="flex items-center justify-between" style={{ maxWidth:"1166px", height:"28px", margin:"0 auto"}}>
           <div className="flex items-center">
             <img src="/icon.png" alt="BandBurg Logo" className="w-8 h-8 mr-3" />
             <h1 className="brand-logo">BANDBURG</h1>
@@ -3770,6 +3770,9 @@ sandbox.log('✅ GUI界面已创建，请与界面交互')`
           </div>
         </div>
       )}
+      <div className="flex page-container footer font-bold">
+        Powered by <img src="/astrobox.svg" style={{height: "14px"}}/> NG
+      </div>
     </div>
   )
 }
