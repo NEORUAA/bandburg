@@ -139,14 +139,14 @@ const BrowserNotSupported = ({ compatibilityResults }: { compatibilityResults: a
   const isMissingBoth = !webAssembly.supported && !webBluetooth.supported
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-6">
+    <div className="min-h-screen bg-white flex items-center justify-center ">
       <div className="max-w-2xl w-full  p-8">
         <div className="flex items-center mb-8">
           <img src="/icon.png" alt="BandBurg Logo" className="w-12 h-12 mr-4" />
           <h1 className="text-3xl font-bold tracking-tight">BANDBURG</h1>
         </div>
         
-        <div className=" p-6 margin-bottom-lg">
+        <div className="  margin-bottom-lg">
           <div className="flex items-center margin-bottom-lg">
             <div className="w-10 h-10  flex items-center justify-center text-xl font-bold mr-3">
               ⚠️

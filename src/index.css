@@ -20,6 +20,7 @@
   body {
     color: var(--black);
     background-color: #f2f2f2;
+    /* font-family: 'MiSymbolVF', 'MiSans Chinese', sans-serif; */
     /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -41,7 +42,7 @@
     margin: 0 auto;
     padding-left: 10px;
     padding-right: 10px;
-    padding-top: 10px;
+    padding-top: 70px;
     padding-bottom: 10px;
   }
 
@@ -51,6 +52,15 @@
 
   .margin-bottom-bg {
     margin-bottom: 16px;
+  }
+  
+  .shadow-lg {
+    box-shadow: 0 0 20px 3px hsl(0, 0%, 0%, .1) !important;
+  }
+
+  @font-face {
+    font-family: 'MiSymbolVF';
+    src: url('/fonts/misymbol_vf-Regular.woff2') format('woff2'),
   }
 }
 
@@ -63,6 +73,7 @@
   /* 侧边导航 */
   .sidebar {
     @apply w-64 h-full;
+    display: none;
   }
 
   .nav-item {
@@ -96,7 +107,6 @@
   /* 主内容区 */
   .main-content {
     @apply flex-1 overflow-auto;
-    padding-left: 10px;
   }
 
   /* 信息栏 */
@@ -253,12 +263,14 @@
     }
   }
 
-  [style="max-width: 1200px; height: 28px; margin: 0px auto; padding: 0px 20px;"] button {
+  button.icon-font {
     padding: 0 !important;
     height: unset;
     border: none;
-    font-size: 30px;
+    font-size: 20px;
     margin: -10px 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   .overlay-content {
@@ -323,8 +335,39 @@
     transform: translateX(100%) !important;
   }
 
+  .icon-font {
+    font-family: 'MiSymbolVF';
+    color: black;
+    font-weight: normal;
+    font-size: 24px;
+  }
+
+  .nav-pair {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .nav-pc {
+    transform: scale(0.9);
+    gap: 20px;
+    transform-origin: center;
+    font-weight: 600;
+    font-size: 15px;
+  }
+
   /* 响应式调整 */
   @media (max-width: 768px) {
+    .nav-pc {
+      display: none !important;
+    }
+
+    .sidebar {
+      display: flex;
+    }
+
     .sidebar {
       @apply w-full border-r-0 border-b border-gray-200;
       display: flex;

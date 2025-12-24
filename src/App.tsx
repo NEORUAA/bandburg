@@ -1315,7 +1315,7 @@ function App() {
       setTimeout(() => {
         setToasts(prev => prev.filter(toast => toast.id !== toastId))
       }, 500)
-    }, 1000)
+    }, 2000)
   }
   
   // 清空日志
@@ -1443,9 +1443,11 @@ function App() {
             <div className="flex items-start">
               <div className="flex-1">
                 <div className="font-medium">
-                  {toast.type === 'success' && '✓ '}
-                  {toast.type === 'error' && '✗ '}
-                  {toast.type === 'warning' && '⚠ '}
+                  <span className="icon-font" style={{fontSize:"unset", marginRight:`${toast.type === 'info' ? '0' : '5px'}`, color:"unset"}}>
+                    {toast.type === 'success' && '󰀈'}
+                    {toast.type === 'error' && '󰀉'}
+                    {toast.type === 'warning' && '󰀟'}
+                  </span>
                   {toast.message}
                 </div>
                 <div className="text-xs opacity-80 mt-1">
@@ -1458,29 +1460,42 @@ function App() {
       </div>
       
       {/* 顶部区域：左上角品牌标识 + 移动端汉堡菜单按钮 */}
-      <div className="border-b border-gray-200 py-4 px-6" style={{ background:"white", border:"none"}}>
+      <div className="border-b border-gray-200 py-4 px-6 fixed z-10" style={{ background:"white", border:"none", width:"100%"}}>
         <div className="flex items-center justify-between" style={{ maxWidth:"1200px", height:"28px", margin:"0 auto", padding:"0 20px"}}>
           <div className="flex items-center">
             <img src="/icon.png" alt="BandBurg Logo" className="w-8 h-8 mr-3" />
-            <div style={{display:"flex",flexDirection:"column",transform:"scale(0.8)",transformOrigin:"left"}}>
-              <h1 className="brand-logo">BANDBURG</h1>
-              <span className="text-gray-500 text-sm">BandBBS Ver 1.0.1</span>
+            <h1 className="brand-logo">BANDBURG</h1>
+          </div>
+          <div className="flex items-center nav-pc">
+            <div className={`cursor-pointer nav-pair ${activeNav === 'device' ? '' : 'opacity-50'}`} onClick={() => {setActiveNav('device')}}>
+              <button className='icon-font'>󰁾</button>
+              设备
+            </div>
+            <div className={`cursor-pointer nav-pair ${activeNav === 'script' ? '' : 'opacity-50'}`} onClick={() => {setActiveNav('script')}}>
+              <button className='icon-font'>󰀚</button>
+              脚本
+            </div>
+            <div className={`cursor-pointer nav-pair ${activeNav === 'about' ? '' : 'opacity-50'}`} onClick={() => {setActiveNav('about')}}>
+              <button className='icon-font'>󰀦</button>
+              关于
             </div>
           </div>
-          {/* 移动端汉堡菜单按钮 */}
-          {isMobile && (
-            <button 
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-md hover:bg-gray-100 z-30 relative"
-              aria-label="切换侧边栏"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          )}
         </div>
       </div>
+
+      {isMobile && (
+        <button 
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 rounded-md hover:bg-gray-100 z-30 relative icon-font"
+          style={{position: "fixed",right: "20px",top: "22px",fontSize: "24px"}}
+          aria-label="切换侧边栏"
+        >
+          {/* <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg> */}
+          󰀙
+        </button>
+      )}
 
       {/* 主布局 */}
       <div className="flex page-container">
@@ -1512,6 +1527,17 @@ function App() {
               <span>设备</span>
             </div>
             <div 
+              className={`nav-item ${activeNav === 'script' ? 'nav-item-selected' : 'nav-item-unselected'}`}
+              onClick={() => {
+                setActiveNav('script')
+                if (isMobile) {
+                  setSidebarOpen(false)
+                }
+              }}
+            >
+              <span>脚本</span>
+            </div>
+            <div 
               className={`nav-item ${activeNav === 'about' ? 'nav-item-selected' : 'nav-item-unselected'}`}
               onClick={() => {
                 setActiveNav('about')
@@ -1521,17 +1547,6 @@ function App() {
               }}
             >
               <span>关于</span>
-            </div>
-            <div 
-              className={`nav-item ${activeNav === 'script' ? 'nav-item-selected' : 'nav-item-unselected'}`}
-              onClick={() => {
-                setActiveNav('script')
-                if (isMobile) {
-                  setSidebarOpen(false)
-                }
-              }}
-            >
-              <span>Script</span>
             </div>
           </div>
         </div>
@@ -1545,8 +1560,12 @@ function App() {
                 <div>
                   <h2 className="info-title">{currentDevice ? currentDevice.name : '暂未连接设备'}</h2>
                   <div className="flex items-center mt-2">
-                    <Icon name="battery-full" className="mr-2" />
-                    <span>电池：{deviceInfo.batteryPercent}%</span>
+                    {/* <Icon name="battery-full" className="mr-2" /> */}
+                    <div style={{margin: "-5px 4px -5px -3px"}}>
+                      <img src="/battery.png" style={{height: "28px"}}/>
+                      <div style={{position: "absolute",width: `${deviceInfo.batteryPercent * 0.25}px`,height: "10px",marginTop: "-19px",marginLeft: "7px",borderRadius: "2px",background: "#262626"}}></div>
+                    </div>
+                    <span>{deviceInfo.batteryPercent}%</span>
                   </div>
                   <div className="info-stats">
                     总空间：{deviceInfo.totalStorage} 已使用：{deviceInfo.usedStorage}
@@ -1580,7 +1599,7 @@ function App() {
                 onClick={() => setDevicesCollapsed(!devicesCollapsed)}
               >
                 <h3 className="dropdown-title">已经保存设备</h3>
-                <span className="dropdown-arrow">{devicesCollapsed ? '▶' : '▼'}</span>
+                <button className="dropdown-arrow icon-font">󰂈</button>
               </div>
               {!devicesCollapsed && (
                 <div className="dropdown-content">
@@ -1633,7 +1652,8 @@ function App() {
               }}
               className="btn-add-device"
             >
-              + 添加新设备
+              <span className="icon-font" style={{fontSize:"unset", marginRight:"5px"}}>󰁿</span>
+              添加新设备
             </button>
 
             {/* 标签切换栏 */}
@@ -1668,10 +1688,10 @@ function App() {
                     <button 
                       onClick={loadWatchfaces}
                       // className=" px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
-                      className='disabled:opacity-50 disabled:cursor-not-allowed'
+                      className='disabled:opacity-50 disabled:cursor-not-allowed icon-font'
                       disabled={!currentDevice}
                     >
-                      刷新列表
+                      󰀢
                     </button>
                   </div>
                   <div className="space-y-4">
@@ -1726,10 +1746,10 @@ function App() {
                     <button 
                       onClick={loadApps}
                       // className=" px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
-                      className='disabled:opacity-50 disabled:cursor-not-allowed'
+                      className='disabled:opacity-50 disabled:cursor-not-allowed icon-font'
                       disabled={!currentDevice}
                     >
-                      刷新列表
+                      󰀢
                     </button>
                   </div>
                   <div className="space-y-4">
@@ -1813,7 +1833,6 @@ function App() {
                   <div className="install-type-dropdown margin-bottom-lg">
                     <div className="dropdown-header">
                       <h3 className="dropdown-title">安装类型</h3>
-                      <span className="dropdown-arrow">▼</span>
                     </div>
                     <div className="mt-4">
                       <select 
@@ -1862,9 +1881,9 @@ function App() {
                 <h3 className="font-bold">操作日志</h3>
                 <button 
                   onClick={clearLogs}
-                  className="text-sm font-bold cursor-pointer hover:opacity-70"
+                  className="text-sm cursor-pointer hover:opacity-70 icon-font"
                 >
-                  清空日志
+                  󰀗
                 </button>
               </div>
               <div 
@@ -1990,7 +2009,7 @@ function App() {
               <div className="space-y-8">
                 {showScriptMarket && (
                   // Script市场页面
-                  <div className=" p-6 margin-bottom-lg">
+                  <div className="  margin-bottom-lg">
                     <div className="flex justify-between items-center margin-bottom-lg">
                       <h3 className="text-2xl font-bold">Script市场</h3>
                       <button
@@ -2108,9 +2127,9 @@ function App() {
                               
                               setLogs(prev => [...prev, `✅ 程序 "${name}" 已保存`])
                             }}
-                            className=" bg-white text-black px-3 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                            className=" bg-white text-black px-3 py-2 cursor-pointer transition-opacity hover:opacity-90 icon-font"
                           >
-                            保存
+                            󰀕
                           </button>
                           
                           <button 
@@ -2134,10 +2153,10 @@ function App() {
                                 setLogs(prev => [...prev, '✅ 程序已删除'])
                               }
                             }}
-                            className=" bg-white text-black px-3 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                            className=" bg-white text-black px-3 py-2 cursor-pointer transition-opacity hover:opacity-90 icon-font"
                             disabled={!selectedScriptId}
                           >
-                            删除
+                            󰀗
                           </button>
                           
                           <button 
@@ -2167,9 +2186,9 @@ function App() {
                               input.click()
                               document.body.removeChild(input)
                             }}
-                            className=" bg-white text-black px-3 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                            className=" bg-white text-black px-3 py-2 cursor-pointer transition-opacity hover:opacity-90 icon-font"
                           >
-                            导入文件
+                            󰁮
                           </button>
                           
                           <button 
@@ -2178,9 +2197,9 @@ function App() {
                               editor.value = ''
                               setSelectedScriptId('')
                             }}
-                            className=" bg-white text-black px-3 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                            className=" bg-white text-black px-3 py-2 cursor-pointer transition-opacity hover:opacity-90 icon-font"
                           >
-                            新建
+                            󰁿
                           </button>
 
                         </div>
@@ -3643,6 +3662,7 @@ sandbox.log('✅ GUI界面已创建，请与界面交互')`
                     onClick={scanDevices}
                     className="w-full"
                   >
+                    <span className="icon-font" style={{fontSize:"unset", marginRight:"5px"}}>󰀠</span>
                     扫描附近设备
                   </button>
                   <p className="text-sm text-gray-500 mt-2 text-center">
