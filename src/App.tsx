@@ -138,6 +138,7 @@ function App() {
   const [showScriptMarket, setShowScriptMarket] = useState(false)
   const [marketScripts, setMarketScripts] = useState<MarketScript[]>([])
   const [loadingMarket, setLoadingMarket] = useState(false)
+  const [scriptMarketUrl, setScriptMarketUrl] = useState('https://bandburgscript.02studio.xyz/scripts.json')
   
   // 设备表单状态
   const [deviceForm, setDeviceForm] = useState<Omit<Device, 'id'>>({
@@ -225,7 +226,7 @@ function App() {
     if (showScriptMarket && marketScripts.length === 0 && !loadingMarket) {
       fetchMarketScripts()
     }
-  }, [showScriptMarket, marketScripts.length, loadingMarket])
+  }, [showScriptMarket, marketScripts.length, loadingMarket, scriptMarketUrl])
   
   // 加载保存的设备
   const loadSavedDevices = () => {
@@ -242,11 +243,11 @@ function App() {
   }
   
   // 获取Script市场脚本列表
-  const fetchMarketScripts = () => {
+  const fetchMarketScripts = (url: string = scriptMarketUrl) => {
     setLoadingMarket(true)
     return new Promise<void>((resolve) => {
       const xhr = new XMLHttpRequest()
-      xhr.open('GET', 'https://bandburgscript.02studio.xyz/scripts.json')
+      xhr.open('GET', url)
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
@@ -1465,7 +1466,7 @@ function App() {
           <div className="flex items-center">
             <img src="/icon.png" alt="BandBurg Logo" className="w-8 h-8 mr-3" />
             {/* <h1 className="brand-logo">BANDBURG</h1> */}
-            <img src="/BANDBURG_c.svg" style={{height: "30px"}}/>
+            <img src="/BANDBURG.svg" style={{height: "24px"}}/>
           </div>
           <div className="flex items-center nav-pc">
             <div className={`cursor-pointer nav-pair ${activeNav === 'device' ? '' : 'opacity-50'}`} onClick={() => {setActiveNav('device')}}>
@@ -1569,7 +1570,7 @@ function App() {
                     <span style={{color:"#262626"}}>{deviceInfo.batteryPercent}%</span>
                   </div>
                   <div className="info-stats">
-                    总空间：{deviceInfo.totalStorage} 已使用z：{deviceInfo.usedStorage}
+                    总空间：{deviceInfo.totalStorage} / 已使用：{deviceInfo.usedStorage}
                   </div>
                 </div>
                 <div>
@@ -1997,30 +1998,48 @@ function App() {
             <div className="info-bar">
               <div className="flex justify-between items-center margin-bottom-lg">
                 <h2 className="text-3xl font-bold">Script 脚本执行</h2>
-                <button 
-                  onClick={() => {
-                    setShowScriptMarket(true)
-                  }}
-                  className=" bg-white text-black px-4 py-2 font-bold cursor-pointer  "
-                >
-                  Script市场
-                </button>
+                {showScriptMarket ? (
+                  <button
+                    onClick={() => setShowScriptMarket(false)}
+                    className=" bg-white text-black px-4 py-2 font-bold cursor-pointer  "
+                  >
+                    返回编辑器
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setShowScriptMarket(true)
+                    }}
+                    className=" bg-white text-black px-4 py-2 font-bold cursor-pointer  "
+                  >
+                    Script市场
+                  </button>
+                )}
               </div>
               
               <div className="space-y-8">
                 {showScriptMarket && (
                   // Script市场页面
-                  <div className="  margin-bottom-lg">
+                  <div className="install-type-dropdown">
                     <div className="flex justify-between items-center margin-bottom-lg">
                       <h3 className="text-2xl font-bold">Script市场</h3>
-                      <button
-                        onClick={() => setShowScriptMarket(false)}
-                        className=" bg-white text-black px-4 py-2 font-bold cursor-pointer  "
-                      >
-                        返回编辑器
-                      </button>
                     </div>
                     
+                    <div className="flex items-center gap-2 mb-4">
+                      <input
+                        type="text"
+                        value={scriptMarketUrl}
+                        onChange={(e) => setScriptMarketUrl(e.target.value)}
+                        className="flex-1 p-2"
+                        placeholder="输入脚本市场URL"
+                      />
+                      <button
+                        onClick={() => fetchMarketScripts(scriptMarketUrl)}
+                        className="icon-font"
+                      >
+                        󰀢
+                      </button>
+                    </div>
                     {loadingMarket ? (
                       <div className="text-center py-8">
                         <p>加载脚本列表中...</p>
@@ -2029,7 +2048,7 @@ function App() {
                       <div className="text-center py-8">
                         <p>点击按钮加载脚本列表</p>
                         <button
-                          onClick={fetchMarketScripts}
+                          onClick={() => fetchMarketScripts(scriptMarketUrl)}
                           className="mt-4  bg-white text-black px-4 py-2 font-bold cursor-pointer  "
                         >
                           加载脚本列表
