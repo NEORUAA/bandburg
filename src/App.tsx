@@ -1464,7 +1464,8 @@ function App() {
         <div className="flex items-center justify-between" style={{ maxWidth:"1166px", height:"28px", margin:"0 auto"}}>
           <div className="flex items-center">
             <img src="/icon.png" alt="BandBurg Logo" className="w-8 h-8 mr-3" />
-            <h1 className="brand-logo">BANDBURG</h1>
+            {/* <h1 className="brand-logo">BANDBURG</h1> */}
+            <img src="/BANDBURG_c.svg" style={{height: "30px"}}/>
           </div>
           <div className="flex items-center nav-pc">
             <div className={`cursor-pointer nav-pair ${activeNav === 'device' ? '' : 'opacity-50'}`} onClick={() => {setActiveNav('device')}}>
@@ -1565,17 +1566,17 @@ function App() {
                       <img src="/battery.png" style={{height: "28px"}}/>
                       <div style={{position: "absolute",width: `${deviceInfo.batteryPercent * 0.25}px`,height: "10px",marginTop: "-19px",marginLeft: "7px",borderRadius: "2px",background: "#262626"}}></div>
                     </div>
-                    <span>{deviceInfo.batteryPercent}%</span>
+                    <span style={{color:"#262626"}}>{deviceInfo.batteryPercent}%</span>
                   </div>
                   <div className="info-stats">
-                    总空间：{deviceInfo.totalStorage} 已使用：{deviceInfo.usedStorage}
+                    总空间：{deviceInfo.totalStorage} 已使用z：{deviceInfo.usedStorage}
                   </div>
                 </div>
                 <div>
                   {currentDevice ? (
                     <button 
                       onClick={disconnectDevice}
-                      className="bg-white text-black px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                      className="bg-white text-black px-4 py-2 font-bold cursor-pointer  "
                     >
                       断开连接
                     </button>
@@ -1583,7 +1584,7 @@ function App() {
                     <button 
                       onClick={() => devices.length > 0 && connectDevice(devices[0])}
                       disabled={devices.length === 0}
-                      className="bg-white text-black px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-white text-black px-4 py-2 font-bold cursor-pointer   disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       连接设备
                     </button>
@@ -1622,7 +1623,7 @@ function App() {
                                 e.stopPropagation();
                                 connectDevice(device);
                               }}
-                              className="bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                              className="bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer  "
                             >
                               连接
                             </button>
@@ -1631,7 +1632,7 @@ function App() {
                                 e.stopPropagation();
                                 deleteDevice(device.id);
                               }}
-                              className="bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                              className="bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer  "
                             >
                               删除
                             </button>
@@ -1687,7 +1688,7 @@ function App() {
                     <h3 className="text-lg font-bold">表盘列表</h3>
                     <button 
                       onClick={loadWatchfaces}
-                      // className=" px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                      // className=" px-4 py-2 font-bold cursor-pointer  "
                       className='disabled:opacity-50 disabled:cursor-not-allowed icon-font'
                       disabled={!currentDevice}
                     >
@@ -1716,7 +1717,7 @@ function App() {
                               ) : (
                                 <button 
                                   onClick={() => setCurrentWatchface(wf.id, wf.name)}
-                                  className=" px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                                  className=" px-3 py-1 text-sm font-bold cursor-pointer  "
                                 >
                                   设为当前
                                 </button>
@@ -1724,7 +1725,7 @@ function App() {
                               {!wf.isCurrent && (
                                 <button 
                                   onClick={() => uninstallWatchface(wf.id, wf.name)}
-                                  className=" px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                                  className=" px-3 py-1 text-sm font-bold cursor-pointer  "
                                 >
                                   卸载
                                 </button>
@@ -1745,7 +1746,7 @@ function App() {
                     <h3 className="text-lg font-bold">应用列表</h3>
                     <button 
                       onClick={loadApps}
-                      // className=" px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                      // className=" px-4 py-2 font-bold cursor-pointer  "
                       className='disabled:opacity-50 disabled:cursor-not-allowed icon-font'
                       disabled={!currentDevice}
                     >
@@ -1769,13 +1770,13 @@ function App() {
                             <div className="flex space-x-2">
                               <button 
                                 onClick={() => launchApp(app.packageName, app.name)}
-                                className=" px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                                className=" px-3 py-1 text-sm font-bold cursor-pointer  "
                               >
                                 启动
                               </button>
                               <button 
                                 onClick={() => uninstallApp(app.packageName, app.name)}
-                                className=" px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                                className=" px-3 py-1 text-sm font-bold cursor-pointer  "
                               >
                                 删除
                               </button>
@@ -1909,7 +1910,7 @@ function App() {
                   <p className="leading-relaxed">
                     BandBurg 是一个基于 WebAssembly (WASM) 的现代化 Web 界面，用于管理 Vela 设备系列设备。
                     通过浏览器即可连接、配置和安装表盘/应用到您的手环设备，无需安装任何额外软件。
-                    本项目由 ASTROBOX 提供技术支持。
+                    <a href="https://github.com/NEORUAA/bandburg" target="_blank" rel="noopener noreferrer">本项目</a> 由 <a href="https://github.com/AstralSightStudios/AstroBox-NG" target="_blank" rel="noopener noreferrer">AstroBox-NG</a> 提供技术支持。
                   </p>
                 </div>
                 
@@ -1932,7 +1933,7 @@ function App() {
                       <h4 className="font-bold mb-2">前端</h4>
                       <ul className="text-sm space-y-1">
                         <li>React 18 + TypeScript</li>
-                        <li>TailwindCSS (黑白极简风格)</li>
+                        <li>TailwindCSS</li>
                         <li>Vite 构建工具</li>
                         <li>WebAssembly (Rust 编译)</li>
                       </ul>
@@ -1954,7 +1955,7 @@ function App() {
                   <ol className="list-decimal pl-5 space-y-3">
                     <li>确保您的设备已开启蓝牙并处于可被发现状态</li>
                     <li>点击"扫描附近设备"按钮扫描并添加您的设备</li>
-                    <li>输入设备的认证密钥（通常为16字节）</li>
+                    <li>输入设备的认证密钥（authkey）<a href="https://www.yuque.com/yulimfish/congmingmao/xiaomi-hyper-document#KCY6h" target="_blank" rel="noopener noreferrer">如何获取？</a></li>
                     <li>连接设备后，您可以管理表盘、应用或安装新文件</li>
                     <li>支持多设备切换，所有配置将自动保存到本地</li>
                   </ol>
@@ -1984,7 +1985,7 @@ function App() {
                 
                 <div className="text-center pt-4">
                   <p className="text-sm text-gray-500">
-                    © 2025 0.2Studio
+                    © 2025 0.2Studio & BandBBS Team
                   </p>
                 </div>
               </div>
@@ -2000,7 +2001,7 @@ function App() {
                   onClick={() => {
                     setShowScriptMarket(true)
                   }}
-                  className=" bg-white text-black px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                  className=" bg-white text-black px-4 py-2 font-bold cursor-pointer  "
                 >
                   Script市场
                 </button>
@@ -2014,7 +2015,7 @@ function App() {
                       <h3 className="text-2xl font-bold">Script市场</h3>
                       <button
                         onClick={() => setShowScriptMarket(false)}
-                        className=" bg-white text-black px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                        className=" bg-white text-black px-4 py-2 font-bold cursor-pointer  "
                       >
                         返回编辑器
                       </button>
@@ -2029,7 +2030,7 @@ function App() {
                         <p>点击按钮加载脚本列表</p>
                         <button
                           onClick={fetchMarketScripts}
-                          className="mt-4  bg-white text-black px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                          className="mt-4  bg-white text-black px-4 py-2 font-bold cursor-pointer  "
                         >
                           加载脚本列表
                         </button>
@@ -2048,7 +2049,7 @@ function App() {
                               </div>
                               <button
                                 onClick={() => installMarketScript(script)}
-                                className=" bg-white text-black px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                                className=" bg-white text-black px-4 py-2 font-bold cursor-pointer  "
                               >
                                 安装
                               </button>
@@ -2127,7 +2128,7 @@ function App() {
                               
                               setLogs(prev => [...prev, `✅ 程序 "${name}" 已保存`])
                             }}
-                            className=" bg-white text-black px-3 py-2 cursor-pointer transition-opacity hover:opacity-90 icon-font"
+                            className=" bg-white text-black px-3 py-2 cursor-pointer   icon-font"
                           >
                             󰀕
                           </button>
@@ -2153,7 +2154,7 @@ function App() {
                                 setLogs(prev => [...prev, '✅ 程序已删除'])
                               }
                             }}
-                            className=" bg-white text-black px-3 py-2 cursor-pointer transition-opacity hover:opacity-90 icon-font"
+                            className=" bg-white text-black px-3 py-2 cursor-pointer   icon-font"
                             disabled={!selectedScriptId}
                           >
                             󰀗
@@ -2186,7 +2187,7 @@ function App() {
                               input.click()
                               document.body.removeChild(input)
                             }}
-                            className=" bg-white text-black px-3 py-2 cursor-pointer transition-opacity hover:opacity-90 icon-font"
+                            className=" bg-white text-black px-3 py-2 cursor-pointer   icon-font"
                           >
                             󰁮
                           </button>
@@ -2197,7 +2198,7 @@ function App() {
                               editor.value = ''
                               setSelectedScriptId('')
                             }}
-                            className=" bg-white text-black px-3 py-2 cursor-pointer transition-opacity hover:opacity-90 icon-font"
+                            className=" bg-white text-black px-3 py-2 cursor-pointer   icon-font"
                           >
                             󰁿
                           </button>
@@ -2360,85 +2361,39 @@ function App() {
                                 // GUI创建功能
                                 gui: (config) => {
                                   // 创建GUI容器
-                                  const container = document.createElement('div')
-                                  container.className = 'bandburg-gui-container'
-                                  container.style.cssText = `
-                                    position: fixed;
-                                    top: 50%;
-                                    left: 50%;
-                                    transform: translate(-50%, -50%);
-                                    background: white;
-                                    border: 2px solid black;
-                                    padding: 20px;
-                                    z-index: 10000;
-                                    min-width: 300px;
-                                    max-width: 90%;
-                                    max-height: 90%;
-                                    overflow-y: auto;
-                                    font-family: sans-serif;
-                                  `
-                                  
-                                  // 创建标题栏（包含标题和右上角关闭按钮）
+                                  const overlayContainer = document.createElement('div')
+                                  overlayContainer.className = 'fixed inset-0 z-30 overlay-container'
+
+                                  const overlay = document.createElement('div')
+                                  overlay.className = 'overlay'
+                                  overlayContainer.appendChild(overlay)
+
                                   const titleBar = document.createElement('div')
-                                  titleBar.style.cssText = `
-                                    display: flex;
-                                    justify-content: space-between;
-                                    align-items: center;
-                                    margin-bottom: 20px;
-                                    border-bottom: 1px solid #ddd;
-                                    padding-bottom: 10px;
-                                  `
+                                  titleBar.className = 'flex-between margin-bottom-lg overlay-title'
+                                  overlay.appendChild(titleBar)
+
+                                  const container = document.createElement('div')
+                                  container.className = 'overlay-content'
+                                  overlay.appendChild(container)
                                   
-                                  if (config.title) {
-                                    const title = document.createElement('h3')
-                                    title.textContent = config.title
-                                    title.style.cssText = `
-                                      margin: 0;
-                                      font-weight: bold;
-                                      font-size: 1.2em;
-                                    `
-                                    titleBar.appendChild(title)
-                                  } else {
-                                    // 如果没有标题，添加占位符
-                                    const placeholder = document.createElement('div')
-                                    placeholder.style.cssText = `flex: 1;`
-                                    titleBar.appendChild(placeholder)
-                                  }
+                                  const title = document.createElement('h2')
+                                  title.textContent = config.title ? config.title : '插件GUI'
+                                  title.className = 'text-white'
+                                  titleBar.appendChild(title)
                                   
                                   // 右上角关闭按钮
                                   const closeXButton = document.createElement('button')
                                   closeXButton.innerHTML = '&times;' // ×符号
                                   closeXButton.title = '关闭'
-                                  closeXButton.style.cssText = `
-                                    background: none;
-                                    border: none;
-                                    font-size: 24px;
-                                    cursor: pointer;
-                                    color: #333;
-                                    width: 30px;
-                                    height: 30px;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    padding: 0;
-                                  `
+                                  closeXButton.className = 'text-white'
                                   
                                   closeXButton.addEventListener('click', () => {
-                                    if (container.parentNode) {
-                                      container.parentNode.removeChild(container)
+                                    if (overlayContainer.parentNode) {
+                                      overlayContainer.parentNode.removeChild(overlayContainer)
                                     }
                                   })
                                   
-                                  closeXButton.addEventListener('mouseover', () => {
-                                    closeXButton.style.color = '#000'
-                                  })
-                                  
-                                  closeXButton.addEventListener('mouseout', () => {
-                                    closeXButton.style.color = '#333'
-                                  })
-                                  
                                   titleBar.appendChild(closeXButton)
-                                  container.appendChild(titleBar)
                                   
                                   // 存储元素引用和值
                                   const elements = {}
@@ -2448,26 +2403,35 @@ function App() {
                                     'input:change': {},
                                     'file:change': {}
                                   }
+
+                                  // 创建标签容器
+                                  const elementContainer = document.createElement('div')
+                                  elementContainer.style.cssText = `
+                                    background: white;
+                                    border-radius: 16px;
+                                    padding: 10px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 10px;
+                                  `
+                                  container.appendChild(elementContainer)
                                   
                                   // 创建表单元素
                                   config.elements?.forEach((element, index) => {
                                     const elementId = element.id || `element_${index}`
                                     
-                                    // 创建标签容器
-                                    const elementContainer = document.createElement('div')
-                                    elementContainer.style.cssText = `
-                                      margin-bottom: 15px;
-                                    `
+                                    
                                     
                                     // 根据类型创建元素
                                     switch (element.type) {
                                       case 'label':
+                                        if (!element.text) break
                                         const label = document.createElement('div')
-                                        label.textContent = element.text || ''
+                                        label.textContent = element.text || 'empty'
                                         label.style.cssText = `
                                           padding: 8px;
-                                          background: #f5f5f5;
-                                          border: 1px solid #ddd;
+                                          border: 1px solid hsl(0, 0%, calc(calc(100% - (1 * 16%)) + (1 * 6%))) !important;
+                                          border-radius: 10px;
                                         `
                                         elementContainer.appendChild(label)
                                         break
@@ -2478,7 +2442,7 @@ function App() {
                                           inputLabel.textContent = element.label
                                           inputLabel.style.cssText = `
                                             display: block;
-                                            margin-bottom: 5px;
+                                            margin-bottom: -5px;
                                             font-weight: bold;
                                           `
                                           elementContainer.appendChild(inputLabel)
@@ -2492,8 +2456,6 @@ function App() {
                                         input.style.cssText = `
                                           width: 100%;
                                           padding: 8px;
-                                          border: 1px solid black;
-                                          box-sizing: border-box;
                                         `
                                         
                                         input.addEventListener('change', () => {
@@ -2516,12 +2478,6 @@ function App() {
                                         button.id = elementId
                                         button.style.cssText = `
                                           width: 100%;
-                                          padding: 12px;
-                                          background: black;
-                                          color: white;
-                                          border: none;
-                                          cursor: pointer;
-                                          font-weight: bold;
                                         `
                                         
                                         button.addEventListener('click', () => {
@@ -2542,7 +2498,7 @@ function App() {
                                           fileLabel.textContent = element.label
                                           fileLabel.style.cssText = `
                                             display: block;
-                                            margin-bottom: 5px;
+                                            margin-bottom: -5px;
                                             font-weight: bold;
                                           `
                                           elementContainer.appendChild(fileLabel)
@@ -2581,7 +2537,7 @@ function App() {
                                           textareaLabel.textContent = element.label
                                           textareaLabel.style.cssText = `
                                             display: block;
-                                            margin-bottom: 5px;
+                                            margin-bottom: -5px;
                                             font-weight: bold;
                                           `
                                           elementContainer.appendChild(textareaLabel)
@@ -2619,7 +2575,7 @@ function App() {
                                           selectLabel.textContent = element.label
                                           selectLabel.style.cssText = `
                                             display: block;
-                                            margin-bottom: 5px;
+                                            margin-bottom: -5px;
                                             font-weight: bold;
                                           `
                                           elementContainer.appendChild(selectLabel)
@@ -2661,39 +2617,11 @@ function App() {
                                         break
                                     }
                                     
-                                    container.appendChild(elementContainer)
+                                    
                                   })
-                                  
-                                  // 自动添加关闭按钮
-                                  const closeButtonContainer = document.createElement('div')
-                                  closeButtonContainer.style.cssText = `
-                                    margin-top: 20px;
-                                    display: flex;
-                                    justify-content: flex-end;
-                                  `
-                                  
-                                  const closeButton = document.createElement('button')
-                                  closeButton.textContent = '关闭'
-                                  closeButton.style.cssText = `
-                                    padding: 8px 16px;
-                                    background: #333;
-                                    color: white;
-                                    border: 1px solid black;
-                                    cursor: pointer;
-                                    font-weight: bold;
-                                  `
-                                  
-                                  closeButton.addEventListener('click', () => {
-                                    if (container.parentNode) {
-                                      container.parentNode.removeChild(container)
-                                    }
-                                  })
-                                  
-                                  closeButtonContainer.appendChild(closeButton)
-                                  container.appendChild(closeButtonContainer)
                                   
                                   // 添加到页面
-                                  document.body.appendChild(container)
+                                  document.body.appendChild(overlayContainer)
                                   
                                   // 返回GUI控制器
                                   return {
@@ -2772,7 +2700,7 @@ function App() {
                               console.error('脚本执行失败:', error)
                             }
                           }}
-                          className=" px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                          className=" px-4 py-2 font-bold cursor-pointer  "
                         >
                           执行脚本
                         </button>
@@ -2781,7 +2709,7 @@ function App() {
                             const editor = document.getElementById('scriptEditor') as HTMLTextAreaElement
                             editor.value = ''
                           }}
-                          className=" bg-white text-black px-4 py-2 font-bold cursor-pointer transition-opacity hover:opacity-90"
+                          className=" bg-white text-black px-4 py-2 font-bold cursor-pointer  "
                         >
                           清空
                         </button>
@@ -3180,7 +3108,7 @@ sandbox.wasm.register_event_sink((event) => {
 
 sandbox.log('✅ 事件监听器已注册，等待应用消息...')`
                         }}
-                        className="mt-2  bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                        className="mt-2  bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer  "
                       >
                         加载此示例
                       </button>
@@ -3252,7 +3180,7 @@ async function batchSendMessages() {
 // 执行函数
 batchSendMessages()`
                         }}
-                        className="mt-2  bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                        className="mt-2  bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer  "
                       >
                         加载此示例
                       </button>
@@ -3344,7 +3272,7 @@ async function monitorDeviceData() {
 // 执行函数
 monitorDeviceData()`
                         }}
-                        className="mt-2  bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                        className="mt-2  bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer  "
                       >
                         加载此示例
                       </button>
@@ -3498,7 +3426,7 @@ gui.on('file:change', 'fileInput', (file) => {
 
 sandbox.log('✅ GUI界面已创建，请与界面交互')`
                         }}
-                        className="mt-2  bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer transition-opacity hover:opacity-90"
+                        className="mt-2  bg-white text-black px-3 py-1 text-sm font-bold cursor-pointer  "
                       >
                         加载此示例
                       </button>
@@ -3633,7 +3561,7 @@ sandbox.log('✅ GUI界面已创建，请与界面交互')`
                 <div className="flex overlay-actions" style={{ gap: '10px' }}>
                   <button 
                     onClick={saveDevice} 
-                    className="flex-1  p-4 text-center font-bold cursor-pointer transition-opacity hover:opacity-90"
+                    className="flex-1  p-4 text-center font-bold cursor-pointer  "
                   >
                     保存设备
                   </button>
@@ -3648,7 +3576,7 @@ sandbox.log('✅ GUI界面已创建，请与界面交互')`
                         connectType: 'SPP'
                       });
                     }}
-                    className="flex-1  bg-white text-black p-4 text-center font-bold cursor-pointer transition-opacity hover:opacity-90"
+                    className="flex-1  bg-white text-black p-4 text-center font-bold cursor-pointer  "
                   >
                     取消
                   </button>
@@ -3735,7 +3663,7 @@ sandbox.log('✅ GUI界面已创建，请与界面交互')`
                     <div className="flex overlay-actions" style={{ gap: '10px' }}>
                       <button 
                         onClick={saveDevice} 
-                        className="flex-1  p-4 text-center font-bold cursor-pointer transition-opacity hover:opacity-90"
+                        className="flex-1  p-4 text-center font-bold cursor-pointer  "
                       >
                         保存设备
                       </button>
@@ -3749,7 +3677,7 @@ sandbox.log('✅ GUI界面已创建，请与界面交互')`
                             connectType: 'SPP'
                           });
                         }}
-                        className="flex-1  bg-white text-black p-4 text-center font-bold cursor-pointer transition-opacity hover:opacity-90"
+                        className="flex-1  bg-white text-black p-4 text-center font-bold cursor-pointer  "
                       >
                         重新扫描
                       </button>
