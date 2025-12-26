@@ -253,7 +253,7 @@ const BrowserNotSupported = ({ compatibilityResults }: { compatibilityResults: a
                 )
               }
             }}
-            className=" px-6 py-3 font-bold hover:opacity-90 transition-opacity"
+            className=" px-6 py-3 font-bold  "
             disabled={isMissingBoth}
             title={isMissingBoth ? '缺失核心功能，无法继续使用' : '强制继续，功能可能受限'}
           >
